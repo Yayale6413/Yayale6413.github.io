@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>东珠珍宝博物馆数字化 · 线上典藏</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* ===== Reset & Base ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #FAFAF9;
+            color: #1C1917;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        img { display: block; max-width: 100%; }
+
+        :root {
+            --gold: #CA8A04;
+            --gold-light: #EAB308;
+            --gold-dark: #A16207;
+            --gold-glow: rgba(202, 138, 4, 0.15);
+            --bg: #FAFAF9;
+            --bg-warm: #F5F2ED;
+            --white: #FFFFFF;
+            --text: #1C1917;
+            --text-secondary: #57534E;
+            --text-muted: #A8A29E;
+            --border: #E7E5E4;
+            --border-light: #F0EDEA;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
+            --shadow-lg: 0 16px 48px rgba(0,0,0,0.12);
+            --radius: 2px;
+            --nav-height: 64px;
+            --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* ===== Navigation ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-height);
+            background: rgba(250, 250, 249, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-light);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+        }
+        .navbar-inner {
+            max-width: 1440px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .logo-mark {
+            width: 8px;
+            height: 28px;
+            background: var(--gold);
+            border-radius: 2px;
+        }
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: 1.5px;
+        }
+        .logo-text em {
+            font-style: italic;
+            font-weight: 400;
+            color: var(--gold);
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        .nav-links a {
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            transition: all 0.25s;
+            cursor: pointer;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 60%;
+            height: 1.5px;
+            background: var(--gold);
+            transition: transform 0.3s;
+        }
+        .nav-links a:hover { color: var(--text); }
+        .nav-links a:hover::after { transform: translateX(-50%) scaleX(1); }
+        .nav-links a.active { color: var(--text); font-weight: 500; }
+        .nav-links a.active::after { transform: translateX(-50%) scaleX(1); }
+
+        /* ===== Hero ===== */
+        .hero {
+            margin-top: var(--nav-height);
+            padding: 80px 40px 48px;
+            text-align: center;
+            background: linear-gradient(180deg, var(--bg-warm) 0%, var(--bg) 100%);
+        }
+        .hero-inner { max-width: 720px; margin: 0 auto; }
+        .hero-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--gold);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: 2px;
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+        .hero h1 em {
+            font-style: italic;
+            color: var(--gold);
+        }
+        .hero-sub {
+            font-size: 15px;
+            font-weight: 300;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            margin-bottom: 28px;
+        }
+        .hero-note {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border: 1px solid rgba(202, 138, 4, 0.2);
+            border-radius: 2px;
+            font-size: 12px;
+            color: var(--gold-dark);
+            letter-spacing: 0.5px;
+            background: rgba(202, 138, 4, 0.04);
+        }
+        .hero-note i { font-size: 12px; opacity: 0.7; }
+        .hero-divider {
+            width: 40px;
+            height: 1px;
+            background: var(--gold);
+            margin: 32px auto 0;
+            opacity: 0.5;
+        }
+
+        /* ===== Gallery ===== */
+        .gallery {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 48px 40px 80px;
+        }
+        .gallery-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 36px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .gallery-head h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: 0.5px;
+        }
+        .gallery-head h2 i {
+            color: var(--gold);
+            margin-right: 10px;
+            font-size: 18px;
+            opacity: 0.7;
+        }
+        .gallery-head .count {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== Grid (Pure Image) ===== */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .grid-item {
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            background: var(--bg-warm);
+            transition: all var(--transition);
+        }
+        .grid-item img {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .grid-item:hover img { transform: scale(1.06); }
+
+        /* Hover overlay - minimal info */
+        .grid-item .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.6) 100%);
+            opacity: 0;
+            transition: opacity 0.4s;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 24px;
+        }
+        .grid-item:hover .overlay { opacity: 1; }
+        .grid-item .overlay .num {
+            font-family: 'Playfair Display', serif;
+            font-size: 13px;
+            color: var(--gold-light);
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+            transform: translateY(8px);
+            transition: transform 0.35s 0.05s;
+        }
+        .grid-item:hover .overlay .num { transform: translateY(0); }
+
+        /* View icon */
+        .grid-item .view-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.6);
+            width: 48px;
+            height: 48px;
+            border: 1.5px solid rgba(255,255,255,0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+            opacity: 0;
+            transition: all 0.35s;
+            backdrop-filter: blur(4px);
+        }
+        .grid-item:hover .view-icon {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* ===== Lightbox ===== */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        .lightbox.active { opacity: 1; pointer-events: auto; }
+        .lightbox-close {
+            position: absolute;
+            top: 28px;
+            right: 36px;
+            width: 44px;
+            height: 44px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 50%;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s;
+            z-index: 2;
+        }
+        .lightbox-close:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
+        .lightbox-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 85vw;
+            max-height: 90vh;
+        }
+        .lightbox-body img {
+            max-width: 100%;
+            max-height: 78vh;
+            object-fit: contain;
+            box-shadow: 0 12px 60px rgba(0,0,0,0.5);
+            border-radius: 2px;
+        }
+        .lightbox-meta {
+            margin-top: 20px;
+            text-align: center;
+            min-height: 60px;
+        }
+        .lightbox-meta .lb-index {
+            font-size: 11px;
+            font-weight: 400;
+            color: var(--gold);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        .lightbox-meta .lb-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #fff;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+        .lightbox-meta .lb-desc {
+            font-size: 13px;
+            font-weight: 300;
+            color: rgba(255,255,255,0.55);
+            margin-top: 4px;
+            letter-spacing: 0.3px;
+        }
+        .lightbox-nav {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-top: 16px;
+        }
+        .lightbox-nav button {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.4);
+            font-size: 13px;
+            cursor: pointer;
+            transition: color 0.2s;
+            font-family: inherit;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 0;
+        }
+        .lightbox-nav button:hover { color: #fff; }
+        .lightbox-nav button:disabled { opacity: 0.2; cursor: default; }
+
+        /* ===== Footer ===== */
+        .footer {
+            text-align: center;
+            padding: 32px 40px;
+            color: var(--text-muted);
+            font-size: 11px;
+            border-top: 1px solid var(--border-light);
+            background: var(--white);
+            letter-spacing: 1px;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 1200px) {
+            .grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        }
+        @media (max-width: 900px) {
+            .grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+            .hero h1 { font-size: 36px; }
+            .hero { padding: 60px 24px 36px; }
+            .gallery { padding: 36px 24px 60px; }
+        }
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .navbar { padding: 0 16px; }
+            .hero h1 { font-size: 28px; letter-spacing: 1px; }
+            .hero-sub { font-size: 13px; }
+            .hero { padding: 48px 16px 28px; }
+            .gallery { padding: 24px 16px 40px; }
+            .gallery-head { flex-direction: column; align-items: flex-start; gap: 4px; }
+            .nav-links { display: none; }
+            .lightbox-close { top: 16px; right: 16px; width: 36px; height: 36px; font-size: 16px; }
+            .lightbox-body { max-width: 95vw; }
+            .lightbox-meta .lb-title { font-size: 17px; }
+            .grid-item .overlay { padding: 16px; }
+        }
+
+        /* ===== Section: Exhibition ===== */
+        .section {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 60px 40px 80px;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        .section-header .label {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--gold);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 30px;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: 1px;
+        }
+        .section-header .divider {
+            width: 32px;
+            height: 1.5px;
+            background: var(--gold);
+            margin: 16px auto 0;
+            opacity: 0.5;
+        }
+        .exhibit-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 24px;
+        }
+        .exhibit-card {
+            background: var(--white);
+            border: 1px solid var(--border-light);
+            padding: 32px 24px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .exhibit-card:hover {
+            border-color: var(--gold);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        .exhibit-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+        .exhibit-card p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            letter-spacing: 0.3px;
+        }
+
+        /* ===== Section: About ===== */
+        .about-wrap {
+            background: var(--bg-warm);
+            border-top: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+        }
+        .about-inner {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 60px 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+        .about-info h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        .about-info .sub {
+            font-size: 12px;
+            color: var(--gold);
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+        .about-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 2;
+            letter-spacing: 0.3px;
+        }
+        .about-info .highlight {
+            color: var(--text);
+            font-weight: 500;
+        }
+        .about-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .about-meta .meta-item {
+            background: var(--white);
+            border: 1px solid var(--border-light);
+            padding: 20px 24px;
+        }
+        .about-meta .meta-item .key {
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .about-meta .meta-item .val {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: 0.5px;
+        }
+        .about-meta .meta-item .val-sm {
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+        .about-addr {
+            grid-column: 1 / -1;
+            background: var(--white);
+            border: 1px solid var(--border-light);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .about-addr i {
+            color: var(--gold);
+            font-size: 16px;
+        }
+
+        @media (max-width: 1024px) {
+            .exhibit-grid { grid-template-columns: repeat(3, 1fr); }
+            .about-inner { grid-template-columns: 1fr; gap: 40px; }
+        }
+        @media (max-width: 600px) {
+            .section { padding: 40px 16px 60px; }
+            .exhibit-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+            .exhibit-card { padding: 24px 16px; }
+            .about-inner { padding: 40px 16px; }
+            .about-meta { grid-template-columns: 1fr; }
+            .section-header h2 { font-size: 24px; }
+        }
+
+        /* ===== Scrollbar ===== */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #D6D3D1; border-radius: 2px; }
+        ::-webkit-scrollbar-thumb:hover { background: #A8A29E; }
+    </style>
+</head>
+<body>
+
+    <!-- ===== Navigation ===== -->
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="#home" class="logo">
+                <span class="logo-mark"></span>
+                <span class="logo-text">东珠珍宝<em>博物馆</em></span>
+            </a>
+            <div class="nav-links">
+                <a href="#home" class="active">首页</a>
+                <a href="#exhibition">展览</a>
+                <a href="#collections">藏品</a>
+                <a href="#about">关于</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== Hero / 首页 ===== -->
+    <section class="hero" id="home">
+        <div class="hero-inner">
+            <div class="hero-label">· 数字化典藏 ·</div>
+            <h1>东珠珍宝博物馆<em>数字化</em></h1>
+            <p class="hero-sub">传承匠心之美 · 珍品线上览</p>
+            <div class="hero-note">
+                <i class="fa-regular fa-bell"></i>
+                仅为部分展览图片，建议线下参观
+            </div>
+            <div class="hero-divider"></div>
+        </div>
+    </section>
+
+    <!-- ===== Section: 展览 ===== -->
+    <section class="section" id="exhibition">
+        <div class="section-header">
+            <div class="label">· 展陈体系 ·</div>
+            <h2>五大主题展区</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="exhibit-grid">
+            <div class="exhibit-card">
+                <h3>东珠历史文化展区</h3>
+                <p>系统展示东珠在松花江、黑龙江流域三千年的采集历史与文化传承脉络</p>
+            </div>
+            <div class="exhibit-card">
+                <h3>东珠及珍珠艺术品展区</h3>
+                <p>陈列珍珠工艺精品，含镇馆之宝——海东青造型天然珍珠</p>
+            </div>
+            <div class="exhibit-card">
+                <h3>珍宝玉石展区</h3>
+                <p>展出宝石、玉器等品类，包含进口澳玉与欧珀原石</p>
+            </div>
+            <div class="exhibit-card">
+                <h3>文化创意体验展区</h3>
+                <p>开放开蚌取珠、珠宝制作等互动体验项目</p>
+            </div>
+            <div class="exhibit-card">
+                <h3>非遗展区</h3>
+                <p>展示传统珠宝加工技艺与河蚌养殖技术</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Gallery / 藏品 ===== -->
+    <section class="gallery" id="collections">
+        <div class="gallery-head">
+            <h2><i class="fa-regular fa-images"></i>馆藏珍品</h2>
+            <span class="count">42 件藏品</span>
+        </div>
+        <div class="grid" id="grid"></div>
+    </section>
+
+    <!-- ===== Lightbox ===== -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lbClose"><i class="fa-solid fa-xmark"></i></button>
+        <div class="lightbox-body">
+            <img id="lbImage" src="" alt="">
+            <div class="lightbox-meta">
+                <div class="lb-index" id="lbIndex"></div>
+                <div class="lb-title" id="lbTitle"></div>
+                <div class="lb-desc" id="lbDesc"></div>
+                <div class="lightbox-nav">
+                    <button id="lbPrev"><i class="fa-solid fa-arrow-left"></i> 上一件</button>
+                    <button id="lbNext">下一件 <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Section: 关于 ===== -->
+    <section class="about-wrap" id="about">
+        <div class="about-inner">
+            <div class="about-info">
+                <h3>佳木斯市东珠珍宝博物馆</h3>
+                <div class="sub">Jiamusi Dongzhu Treasure Museum</div>
+                <p>
+                    位于黑龙江省佳木斯市东风区，成立于2022年3月14日，2023年正式开馆运营，是<span class="highlight">东北三省规模最大的民营博物馆</span>和<span class="highlight">全球首个以东珠为主题的专题博物馆</span>。馆区采用明清风格二层建筑布局，建筑面积达4600平方米，设有五大展区及非遗工坊，展出东珠、珍珠、宝石等展品超万件。镇馆之宝为天然形成海东青造型的稀有珍珠。
+                </p>
+                <p style="margin-top: 12px;">
+                    2024年开展研学活动32场，服务5600余人次，并与佳木斯职教集团合作设立研学实践基地。作为文化产业项目，该馆整合东珠产业链，推动河蚌养殖、珠宝加工及进出口贸易发展。
+                </p>
+            </div>
+            <div class="about-meta">
+                <div class="meta-item">
+                    <div class="key">中文名称</div>
+                    <div class="val-sm">佳木斯市东珠珍宝博物馆</div>
+                </div>
+                <div class="meta-item">
+                    <div class="key">建筑面积</div>
+                    <div class="val">4600 m²</div>
+                </div>
+                <div class="meta-item">
+                    <div class="key">成立时间</div>
+                    <div class="val">2022年</div>
+                </div>
+                <div class="meta-item">
+                    <div class="key">藏品总量</div>
+                    <div class="val">超万件</div>
+                </div>
+                <div class="about-addr">
+                    <i class="fa-regular fa-location-dot"></i>
+                    黑龙江省佳木斯市东风区东兴城（长江巷西）
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Footer ===== -->
+    <footer class="footer">
+        佳木斯市东珠珍宝博物馆 &nbsp;·&nbsp; 版权所有 &copy; 2026 &nbsp;·&nbsp; 数据来源：百度百科
+    </footer>
+
+    <!-- ===== JavaScript ===== -->
+    <script>
+        const exhibits = [
+            { file: '图片素材/IMG_20260804_132425_edit_1261209307180467.jpg' },
+            { file: '图片素材/IMG_20260804_132435_edit_1261200332795573.jpg' },
+            { file: '图片素材/IMG_20260804_132440_edit_1261192317330470.jpg' },
+            { file: '图片素材/IMG_20260804_132446_edit_1261186254289846.jpg' },
+            { file: '图片素材/IMG_20260804_132450_edit_1261177732134639.jpg' },
+            { file: '图片素材/IMG_20260804_132501.jpg' },
+            { file: '图片素材/IMG_20260804_132702.jpg' },
+            { file: '图片素材/IMG_20260804_132707.jpg' },
+            { file: '图片素材/IMG_20260804_132713.jpg' },
+            { file: '图片素材/IMG_20260804_132718.jpg' },
+            { file: '图片素材/IMG_20260804_132723.jpg' },
+            { file: '图片素材/IMG_20260804_132731.jpg' },
+            { file: '图片素材/IMG_20260804_132735.jpg' },
+            { file: '图片素材/IMG_20260804_132740.jpg' },
+            { file: '图片素材/IMG_20260804_132745.jpg' },
+            { file: '图片素材/IMG_20260804_132749.jpg' },
+            { file: '图片素材/IMG_20260804_132754.jpg' },
+            { file: '图片素材/IMG_20260804_132758.jpg' },
+            { file: '图片素材/IMG_20260804_132807.jpg' },
+            { file: '图片素材/IMG_20260804_132830.jpg' },
+            { file: '图片素材/IMG_20260804_132837.jpg' },
+            { file: '图片素材/IMG_20260804_132842.jpg' },
+            { file: '图片素材/IMG_20260804_132846.jpg' },
+            { file: '图片素材/IMG_20260804_132850.jpg' },
+            { file: '图片素材/IMG_20260804_132909.jpg' },
+            { file: '图片素材/IMG_20260804_132920.jpg' },
+            { file: '图片素材/IMG_20260804_132957.jpg' },
+            { file: '图片素材/IMG_20260804_133005.jpg' },
+            { file: '图片素材/IMG_20260804_133022.jpg' },
+            { file: '图片素材/IMG_20260804_133031.jpg' },
+            { file: '图片素材/IMG_20260804_133039.jpg' },
+            { file: '图片素材/IMG_20260804_133048.jpg' },
+            { file: '图片素材/IMG_20260804_133114.jpg' },
+            { file: '图片素材/IMG_20260804_133129.jpg' },
+            { file: '图片素材/IMG_20260804_133137.jpg' },
+            { file: '图片素材/IMG_20260804_133146.jpg' },
+            { file: '图片素材/IMG_20260804_133405.jpg' },
+            { file: '图片素材/IMG_20260804_133412.jpg' },
+            { file: '图片素材/IMG_20260804_133418.jpg' },
+            { file: '图片素材/IMG_20260804_133511.jpg' },
+
+            { file: '图片素材/IMG_20260804_133527.jpg' },
+            { file: '图片素材/IMG_20260804_133547.jpg' },
+        ];
+
+        let currentIndex = -1;
+        const grid = document.getElementById('grid');
+        const lightbox = document.getElementById('lightbox');
+        const lbImage = document.getElementById('lbImage');
+        const lbIndex = document.getElementById('lbIndex');
+        const lbTitle = document.getElementById('lbTitle');
+        const lbDesc = document.getElementById('lbDesc');
+        const lbClose = document.getElementById('lbClose');
+        const lbPrev = document.getElementById('lbPrev');
+        const lbNext = document.getElementById('lbNext');
+
+        // Render pure image grid (no text below)
+        function render() {
+            grid.innerHTML = '';
+            exhibits.forEach((item, i) => {
+                const div = document.createElement('div');
+                div.className = 'grid-item';
+                div.innerHTML = `
+                    <img src="${item.file}" alt="展品 ${i + 1}" loading="lazy">
+                    <div class="view-icon"><i class="fa-regular fa-expand"></i></div>
+                    <div class="overlay">
+                        <div class="num">0${i + 1}</div>
+                    </div>
+                `;
+                div.addEventListener('click', () => open(i));
+                grid.appendChild(div);
+            });
+        }
+
+        function open(index) {
+            currentIndex = index;
+            const item = exhibits[index];
+            lbImage.src = item.file;
+            lbImage.alt = `展品 ${index + 1}`;
+            lbIndex.textContent = `0${index + 1} / 42`;
+            lbTitle.textContent = '';
+            lbDesc.textContent = '';
+            lbPrev.disabled = index === 0;
+            lbNext.disabled = index === exhibits.length - 1;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function close() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function prev() { if (currentIndex > 0) open(currentIndex - 1); }
+        function next() { if (currentIndex < exhibits.length - 1) open(currentIndex + 1); }
+
+        lbClose.addEventListener('click', close);
+        lbPrev.addEventListener('click', prev);
+        lbNext.addEventListener('click', next);
+
+        lightbox.addEventListener('click', (e) => { if (e.target === lightbox) close(); });
+
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('active')) return;
+            if (e.key === 'Escape') close();
+            if (e.key === 'ArrowLeft') prev();
+            if (e.key === 'ArrowRight') next();
+        });
+
+        render();
+
+        // ===== Scroll Spy: highlight active nav link =====
+        const navLinks = document.querySelectorAll('.nav-links a');
+        const sections = [
+            { id: 'home', el: document.getElementById('home') },
+            { id: 'exhibition', el: document.getElementById('exhibition') },
+            { id: 'collections', el: document.getElementById('collections') },
+            { id: 'about', el: document.getElementById('about') }
+        ];
+
+        function updateActiveNav() {
+            const scrollY = window.scrollY + 100;
+            let activeId = 'home';
+            sections.forEach(sec => {
+                if (sec.el && sec.el.offsetTop <= scrollY) {
+                    activeId = sec.id;
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.getAttribute('href') === '#' + activeId);
+            });
+        }
+        window.addEventListener('scroll', updateActiveNav);
+        updateActiveNav();
+    </script>
+</body>
+</html>
